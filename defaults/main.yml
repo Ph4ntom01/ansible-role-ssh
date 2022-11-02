@@ -1,0 +1,10 @@
+---
+# User configuration.
+usr_name: "user"
+usr_dir: "/home/{{ usr_name }}"
+is_usr_sudo: false
+
+# SSH configuration.
+ssh_dir: "{{ usr_dir }}/.ssh"
+ssh_priv_key: "{{ ssh_dir }}/{{ usr_name }}"
+ssh_pub_key: "{{ ssh_priv_key }}.pub"

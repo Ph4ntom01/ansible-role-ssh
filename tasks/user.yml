@@ -1,0 +1,19 @@
+---
+- name: Create {{ usr_name }} user.
+  ansible.builtin.user:
+    name: "{{ usr_name }}"
+    password: "{{ usr_passwd }}"
+
+- name: Add {{ usr_name }} user to the sudoers file.
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    line: "{{ usr_name }}    ALL=(ALL)    NOPASSWD:ALL"
+    create: yes
+  when: is_usr_sudo | bool
+
+- name: Change "{{ usr_dir }}" directory permission.
+  ansible.builtin.file:
+    path: "{{ usr_dir }}"
+    state: directory
+    mode: 0777
+  delegate_to: "{{ groups.master_node[0] }}"

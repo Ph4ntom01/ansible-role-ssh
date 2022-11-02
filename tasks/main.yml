@@ -1,0 +1,10 @@
+---
+# User configuration.
+- include_tasks: user.yml
+
+# Setup/install tasks.
+- include_tasks: create_key.yml
+- include_tasks: setup_key.yml
+
+# SSH configuration.
+- include_tasks: ssh.yml

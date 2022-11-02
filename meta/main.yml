@@ -1,0 +1,16 @@
+galaxy_info:
+  role_name: ansible-role-ssh
+  author: Ph4ntom01
+  description: Sets the environment on ansible hosts by creating a common user and setting needed keys.
+  license: GPL-3.0
+  min_ansible_version: "2.9"
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+    - name: Debian
+      versions:
+        - bullseye
+  galaxy_tags:
+    - ssh
+dependencies: []

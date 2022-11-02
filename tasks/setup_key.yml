@@ -1,0 +1,44 @@
+---
+- name: Copy public key from master node to localhost.
+  ansible.builtin.fetch:
+    src: "{{ ssh_pub_key }}"
+    dest: /tmp/
+    flat: yes
+  delegate_to: "{{ groups.master_node[0] }}"
+  become: true
+  become_user: "{{ usr_name }}"
+
+- name: Authorize public key from localhost to nodes.
+  ansible.posix.authorized_key:
+    user: "{{ usr_name }}"
+    key: "{{ lookup('file', '/tmp/{{ usr_name }}.pub') }}"
+  become: true
+  become_user: "{{ usr_name }}"
+
+- name: Save node fingerprint.
+  shell: ssh-keyscan -t ed25519 "{{ ansible_facts.facter_networking.interfaces.eth0.ip }}"
+  register: node_fingerprint
+
+- name: Add node to the known_hosts file.
+  ansible.builtin.known_hosts:
+    name: "{{ ansible_facts.facter_networking.fqdn }}"
+    key: "{{ ansible_facts.facter_networking.fqdn }},{{ node_fingerprint.stdout }}"
+  delegate_to: "{{ groups.master_node[0] }}"
+  become: true
+  become_user: "{{ usr_name }}"
+
+- name: Give back correct mode for ~/.ssh directory.
+  ansible.builtin.file:
+    path: "{{ ssh_dir }}"
+    mode: 0700
+    state: directory
+  delegate_to: "{{ groups.master_node[0] }}"
+  become: true
+  become_user: "{{ usr_name }}"
+
+- name: Give back correct mode for "{{ usr_dir }}".
+  ansible.builtin.file:
+    path: "{{ usr_dir }}"
+    state: directory
+    mode: 0700
+  delegate_to: "{{ groups.master_node[0] }}"

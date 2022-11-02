@@ -1,0 +1,8 @@
+---
+- name: Create {{ usr_name }} ssh configuration file.
+  ansible.builtin.copy:
+    dest: /etc/ssh/ssh_config.d/{{ usr_name }}.conf
+    content: "IdentityFile ~/.ssh/{{ usr_name }}"
+    mode: 0644
+    owner: root
+  delegate_to: "{{ groups.master_node[0] }}"
